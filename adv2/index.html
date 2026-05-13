@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>untitled</title>
+    <title>安全性檢查</title>
     <style>
         body {
             margin: 0;
@@ -68,6 +68,24 @@
             transition: width 0.5s ease;
         }
 
+        /* 按鈕樣式 */
+        .action-btn {
+            display: none; /* 初始隱藏，跑完進度才出現 */
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #0051c3;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #003d94;
+        }
+
         iframe {
             position: fixed;
             top: 0;
@@ -93,45 +111,64 @@
             <div class="progress-bar">
                 <div class="progress-fill" id="progress"></div>
             </div>
+            <!-- 使用者按鈕 -->
+            <button class="action-btn" id="start-btn">完成檢查，點擊進入網站</button>
         </div>
         
         <p style="font-size: 13px; margin-top: 20px;">
-            <span id="">aiixibear.run.place</span><br>
-            瀏覽器版本: <span id="1">N</span>
+            <span>aiixibear.run.place</span><br>
+            瀏覽器版本: <span id="browser-version">N</span>
         </p>
     </div>
 
     <iframe 
         id="rick-frame"
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=0" 
+        src="" 
         allow="autoplay; encrypted-media" 
         allowfullscreen>
     </iframe>
 
     <script>
-        // 抓取一些假資訊讓畫面更真
-        document.getElementById('1').innerText = navigator.userAgent.split(' ')[0];
+        /**
+         * 設定瀏覽器版本資訊
+         */
+        document.getElementById('browser-version').innerText = navigator.userAgent.split(' ')[0];
 
         const steps = ['step1', 'step2', 'step3'];
         const progress = document.getElementById('progress');
+        const startBtn = document.getElementById('start-btn');
+        const rickFrame = document.getElementById('rick-frame');
         let currentStep = 0;
 
+        /**
+         * 模擬連線檢查邏輯
+         */
         function runCheck() {
             if (currentStep < steps.length) {
                 document.getElementById(steps[currentStep]).classList.add('active');
                 currentStep++;
-                progress.style.width = (currentStep * 33) + '%';
-                setTimeout(runCheck, 1500); // 每一項檢查跑 1.5 秒
+                progress.style.width = (currentStep * 33.3) + '%';
+                setTimeout(runCheck, 1200); 
             } else {
-                // 檢查完成！變臉啟動！
                 progress.style.width = '100%';
+                // 檢查完成，顯示按鈕引導使用者點擊
                 setTimeout(() => {
-                    document.getElementById('rick-frame').style.display = 'block';
+                    startBtn.style.display = 'block';
                 }, 500);
             }
         }
 
-        // 啟動檢查
+        /**
+         * 按鈕點擊事件：啟動影片播放
+         */
+        startBtn.addEventListener('click', function() {
+            // 設定 iframe 的 src 並啟動自動播放
+            const videoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+            rickFrame.src = videoUrl;
+            rickFrame.style.display = 'block';
+        });
+
+        // 頁面載入後自動開始流程
         window.onload = runCheck;
     </script>
 
