@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全性檢查</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #313131;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 90%;
+            text-align: left;
+        }
+
+        h1 { font-size: 32px; font-weight: 500; margin-bottom: 10px; }
+        p { font-size: 16px; color: #666; }
+
+        .loading-box {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .status-item {
+            margin: 10px 0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-item::before {
+            content: "✓";
+            margin-right: 10px;
+            color: #2ecc71;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        .status-item.active::before { opacity: 1; }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #eee;
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #0051c3;
+            transition: width 0.5s ease;
+        }
+
+        /* 按鈕樣式 */
+        .action-btn {
+            display: none; /* 初始隱藏，跑完進度才出現 */
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #0051c3;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #003d94;
+        }
+
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: 0;
+            display: none;
+            z-index: 9999;
+        }
+    </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FGDZHH9Z7P"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-FGDZHH9Z7P');
+</script>
+
+</head>
+<body>
+
+    <div class="container" id="main-content">
+        <h1>請稍候...</h1>
+        <p>正在檢查連線是否安全。此過程可能需要幾秒鐘。</p>
+        
+        <div class="loading-box">
+            <div class="status-item" id="step1">正在檢查瀏覽器資訊...</div>
+            <div class="status-item" id="step2">正在驗證 IP 位址安全性...</div>
+            <div class="status-item" id="step3">正在進行加密隧道連線...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <!-- 使用者按鈕 -->
+            <button class="action-btn" id="start-btn">完成檢查，點擊進入網站</button>
+        </div>
+        
+        <p style="font-size: 13px; margin-top: 20px;">
+            <span>Safe</span><br>
+            瀏覽器版本: <span id="browser-version">N</span>
+        </p>
+    </div>
+
+    <iframe 
+        id="rick-frame"
+        src="" 
+        allow="autoplay; encrypted-media" 
+        allowfullscreen>
+    </iframe>
+
+    <script>
+        /**
+         * 設定瀏覽器版本資訊
+         */
+        document.getElementById('browser-version').innerText = navigator.userAgent.split(' ')[0];
+
+        const steps = ['step1', 'step2', 'step3'];
+        const progress = document.getElementById('progress');
+        const startBtn = document.getElementById('start-btn');
+        const rickFrame = document.getElementById('rick-frame');
+        let currentStep = 0;
+
+        /**
+         * 模擬連線檢查邏輯
+         */
+        function runCheck() {
+            if (currentStep < steps.length) {
+                document.getElementById(steps[currentStep]).classList.add('active');
+                currentStep++;
+                progress.style.width = (currentStep * 33.3) + '%';
+                setTimeout(runCheck, 1200); 
+            } else {
+                progress.style.width = '100%';
+                // 檢查完成，顯示按鈕引導使用者點擊
+                setTimeout(() => {
+                    startBtn.style.display = 'block';
+                }, 500);
+            }
+        }
+
+        /**
+         * 按鈕點擊事件：啟動影片播放
+         */
+        startBtn.addEventListener('click', function() {
+            // 設定 iframe 的 src 並啟動自動播放
+            const videoUrl = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
+            rickFrame.src = videoUrl;
+            rickFrame.style.display = 'block';
+        });
+
+        // 頁面載入後自動開始流程
+        window.onload = runCheck;
+    </script>
+
+</body>
+</html>
